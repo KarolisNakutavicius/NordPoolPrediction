@@ -27,4 +27,13 @@ convert_to_applicable_types()
 
 df.dropna(inplace=True)
 df.columns = ['ds', 'y']
-print(df.head())
+
+m = NeuralProphet()
+m.fit(df, freq='D')
+
+future = m.make_future_dataframe(df, periods=5)
+forecast = m.predict(future)
+print(forecast)
+plot = m.plot(forecast)
+# plot = m.plot_components(forecast)
+plot.show()
