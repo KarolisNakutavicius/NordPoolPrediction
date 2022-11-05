@@ -1,6 +1,7 @@
 from neuralprophet import NeuralProphet
 import pandas as pd
 from matplotlib import pyplot as plt
+import os
 
 PRICE_COLUMN_NAME = 'Value'
 DATE_COLUMN_NAME = 'DateTime'
@@ -11,38 +12,31 @@ def convert_to_applicable_types(df):
     df[DATE_COLUMN_NAME] = pd.to_datetime(df[DATE_COLUMN_NAME])
 
 
-def show_graph():
-    # plt.plot(df[DATE_COLUMN_NAME], df[PRICE_COLUMN_NAME])
-    plt.title("Electricity price")
-    plt.ylabel('MWh')
-    plt.xlabel('Day')
-    plt.tick_params(axis='x', which='major', labelsize=8)
-    plt.show()
+def reformat_for_prophet():
+    convert_to_applicable_types(train_df)
+    convert_to_applicable_types(test_df)
+    train_df.columns = ['ds', 'y']
+    train_df.ds = train_df.ds.drop_duplicates()
+    train_df.dropna(inplace=True)
+    test_df.columns = ['ds', 'y']
+    test_df.ds = test_df.ds.drop_duplicates()
+    test_df.dropna(inplace=True)
 
 
-train_df = pd.read_csv(r'C:\Users\karol\Desktop\trainingData.csv')
-test_df = pd.read_csv(r'C:\Users\karol\Desktop\testData.csv')
-convert_to_applicable_types(train_df)
-convert_to_applicable_types(test_df)
+train_df = pd.read_csv(rf'{os.getcwd()}\trainingData.csv')
+test_df = pd.read_csv(rf'{os.getcwd()}\testData.csv')
 
-# show_graph()
-
-train_df.columns = ['ds', 'y']
-train_df.ds = train_df.ds.drop_duplicates()
-train_df.dropna(inplace=True)
-test_df.columns = ['ds', 'y']
-test_df.ds = test_df.ds.drop_duplicates()
-test_df.dropna(inplace=True)
+reformat_for_prophet()
 
 m = NeuralProphet()
 train_metrics = m.fit(train_df, freq='D')
 test_metrics = m.test(test_df)
-print(test_metrics)
+print(f'============ TEST RESULTS ============\n\n{test_metrics}\n\n====================================\n\n')
 
-# future = m.make_future_dataframe(train_df, periods=3)
 forecast = m.predict(test_df)
 print(forecast)
+
 plot = m.plot(forecast)
-# # plot = m.plot_components(forecast)
-# show_graph()
+plt.ylabel('MWh')
+plt.xlabel('Day')
 plot.show()
