@@ -31,7 +31,7 @@ df.columns = ['ds', 'y']
 m = NeuralProphet()
 m.fit(df, freq='D')
 
-future = m.make_future_dataframe(df, periods=5)
+future = m.make_future_dataframe(df, n_historic_predictions=3)
 forecast = m.predict(future)
 print(forecast)
 plot = m.plot(forecast)
