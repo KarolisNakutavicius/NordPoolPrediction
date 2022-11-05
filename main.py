@@ -3,37 +3,46 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 PRICE_COLUMN_NAME = 'Value'
-DATE_COLUMN_NAME = 'Date'
+DATE_COLUMN_NAME = 'DateTime'
 
 
-def convert_to_applicable_types():
-    df[PRICE_COLUMN_NAME] = df[PRICE_COLUMN_NAME].str.replace(',', '.')
+def convert_to_applicable_types(df):
     df[PRICE_COLUMN_NAME] = pd.to_numeric(df[PRICE_COLUMN_NAME])
-    df[DATE_COLUMN_NAME] = pd.to_datetime(df[DATE_COLUMN_NAME], dayfirst=True)
+    df[DATE_COLUMN_NAME] = pd.to_datetime(df[DATE_COLUMN_NAME])
 
 
 def show_graph():
-    plt.plot(df[DATE_COLUMN_NAME], df[PRICE_COLUMN_NAME])
+    # plt.plot(df[DATE_COLUMN_NAME], df[PRICE_COLUMN_NAME])
     plt.title("Electricity price")
     plt.ylabel('MWh')
     plt.xlabel('Day')
-    plt.tick_params(axis='x', which='major', labelsize=5)
+    plt.tick_params(axis='x', which='major', labelsize=8)
     plt.show()
 
 
-df = pd.read_csv(r'C:\Users\karol\Desktop\Dienos-kainos.csv')
-convert_to_applicable_types()
+train_df = pd.read_csv(r'C:\Users\karol\Desktop\trainingData.csv')
+test_df = pd.read_csv(r'C:\Users\karol\Desktop\testData.csv')
+convert_to_applicable_types(train_df)
+convert_to_applicable_types(test_df)
+
 # show_graph()
 
-df.dropna(inplace=True)
-df.columns = ['ds', 'y']
+train_df.columns = ['ds', 'y']
+train_df.ds = train_df.ds.drop_duplicates()
+train_df.dropna(inplace=True)
+test_df.columns = ['ds', 'y']
+test_df.ds = test_df.ds.drop_duplicates()
+test_df.dropna(inplace=True)
 
 m = NeuralProphet()
-m.fit(df, freq='D')
+train_metrics = m.fit(train_df, freq='D')
+test_metrics = m.test(test_df)
+print(test_metrics)
 
-future = m.make_future_dataframe(df, n_historic_predictions=3)
-forecast = m.predict(future)
+# future = m.make_future_dataframe(train_df, periods=3)
+forecast = m.predict(test_df)
 print(forecast)
 plot = m.plot(forecast)
-# plot = m.plot_components(forecast)
+# # plot = m.plot_components(forecast)
+# show_graph()
 plot.show()
