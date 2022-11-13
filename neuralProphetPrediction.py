@@ -24,7 +24,7 @@ def reformat_for_prophet():
 
 
 train_df = pd.read_csv(rf'{os.getcwd()}\trainingData.csv')
-test_df = pd.read_csv(rf'{os.getcwd()}\testData.csv')
+test_df = pd.read_csv(rf'{os.getcwd()}\testingData2022.csv')
 
 reformat_for_prophet()
 
