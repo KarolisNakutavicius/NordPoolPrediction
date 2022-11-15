@@ -10,17 +10,12 @@ import datetime as dt
 import matplotlib.dates as dates
 # from matplotlib.pyplot import figure
 from matplotlib import pyplot as plt
+import utilities
+import constants
+from utilities import setup_plot_with_data
 
-train_df = pd.read_csv(rf'{os.getcwd()}\trainingData.csv')
-test_df = pd.read_csv(rf'{os.getcwd()}\testingData2022.csv')
+train_df, test_df = utilities.get_data()
 
-# print(type(dates.datestr2num(test_df[0][DATE_COLUMN_NAME])))
-
-convert_to_applicable_types(train_df)
-convert_to_applicable_types(test_df)
-
-
-plt.plot(test_df[DATE_COLUMN_NAME], test_df[PRICE_COLUMN_NAME])
+setup_plot_with_data(train_df, test_df)
+plt.plot(test_df[constants.DATE_COLUMN_NAME], test_df[constants.PRICE_COLUMN_NAME])
 plt.show()
-
-print(test_df.tail())
