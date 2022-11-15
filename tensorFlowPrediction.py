@@ -19,15 +19,14 @@ model = tf.keras.models.Sequential([
 ])
 # print(model.summary())
 
-loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+loss_fn = keras.losses.SparseCategoricalCrossentropy(from_logits=True) # Loss function that is used to train model accordingly
 optim = keras.optimizers.Adam(lr=0.001)
-metrics = ["accuracy"]
+metrics = ["accuracy"]  # metrics that tells how model performs. Not used in training.
+model.compile(loss=loss_fn, optimizer=optim, metrics=metrics) # Confirugring model for training
 
-model.compile(loss=loss, optimizer=optim, metrics=metrics) # Confirugring model for training
 # training
 batch_size = 64
 epochs = 5
-
 model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, shuffle=True, verbose=2)
 
 # evaluate
@@ -35,7 +34,6 @@ results = model.evaluate(x_test, y_test, batch_size=batch_size, verbose=2)
 print("test loss, test acc:", results)
 
 # predictions
-
 probability_model = keras.models.Sequential([
     model,
     keras.layers.Softmax()
