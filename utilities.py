@@ -23,7 +23,7 @@ def convert_to_applicable_types(df):
 
 def configure_plot():
     plt.figure(figsize=(20, 16))
-    plt.xlabel("Date", fontsize=20, labelpad=20)
+    plt.xlabel("Data", fontsize=20, labelpad=20)
     plt.ylabel("MWh", fontsize=20)
     plt.title(constants.TITLE_PREDICTED_PRICES, fontsize=30, pad=50)
     plt.xticks(fontsize=20, rotation=60)
