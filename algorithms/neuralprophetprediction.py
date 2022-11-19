@@ -11,7 +11,7 @@ def reformat_for_prophet():
     test_df.dropna(inplace=True)
 
 # Init
-train_df, test_df = utilities.get_data()
+train_df, test_df = utilities.init_data()
 utilities.setup_plot_with_data(train_df, test_df)
 reformat_for_prophet()
 

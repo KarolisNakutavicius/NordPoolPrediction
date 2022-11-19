@@ -14,7 +14,7 @@ import utilities
 import constants
 from utilities import setup_plot_with_data
 
-train_df, test_df = utilities.get_data()
+train_df, test_df = utilities.init_data()
 
 setup_plot_with_data(train_df, test_df)
 plt.plot(test_df[constants.DATE_COLUMN_NAME], test_df[constants.PRICE_COLUMN_NAME])
