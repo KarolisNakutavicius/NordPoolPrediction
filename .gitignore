@@ -1,1 +1,6 @@
 .idea/
+/model1/keras_metadata.pb
+/model1/saved_model.pb
+/saved_model.pkl
+/model1/variables/variables.data-00000-of-00001
+/model1/variables/variables.index
