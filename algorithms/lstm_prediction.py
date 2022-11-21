@@ -48,12 +48,13 @@ def plot_predictions(used_model, sample, label, start=0, end=100):
 
 
 def train_model():
-    # Figure 9 shows that the optimal results can be achieved using three layers
     model = Sequential()
-    model.add(InputLayer((WINDOW_SIZE, 1)))  # Or keras.layers.Flatten()
-    model.add(LSTM(64))  # 64?? Define meaning
+    model.add(InputLayer((WINDOW_SIZE, 1)))
+    model.add(LSTM(64))
+    model.add(Flatten())
+    # model.add(LSTM(64))
     model.add(Dense(8, 'relu'))
-    model.add(Dense(1, 'linear'))  # Define
+    model.add(Dense(1, 'linear'))
     cp = ModelCheckpoint(MODEL_PATH, save_best_only=True)
     model.compile(
         loss=MeanAbsoluteError(),
@@ -87,21 +88,3 @@ model = train_model()
 
 
 plot_predictions(model, samples_test, label_test)
-
-# train_predictions = model1.predict(X_val).flatten()
-# train_results = pd.DataFrame(data={'Train Predictions': train_predictions, 'Actuals': y_val})
-#
-# print(train_results)
-#
-# plt.plot(train_results['Train Predictions'][:100])
-# plt.plot(train_results['Actuals'][:100])
-# plt.show()
-
-# train_predictions = model1.predict(X_test).flatten()
-# train_results = pd.DataFrame(data={'Train Predictions': train_predictions, 'Actuals': y_test})
-#
-# print(train_results)
-#
-# plt.plot(train_results['Train Predictions'][:100])
-# plt.plot(train_results['Actuals'][:100])
-# plt.show()
