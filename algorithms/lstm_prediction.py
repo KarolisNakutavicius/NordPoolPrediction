@@ -11,15 +11,18 @@ from keras.layers import *
 import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.callbacks import ModelCheckpoint
-from keras.losses import MeanSquaredError
+from keras.losses import *
 from keras.metrics import RootMeanSquaredError
 from keras.optimizers import Adam
 from keras.models import load_model
 import utilities
 import constants
 
+WINDOW_SIZE = 5
+MODEL_PATH = 'lstm_model/'
 
-def convert_to_samples_and_labels(df, window_size=5):
+
+def convert_to_samples_and_labels(df, window_size=WINDOW_SIZE):
     df_as_np = df.to_numpy()
     samples = []
     labels = []
@@ -31,44 +34,56 @@ def convert_to_samples_and_labels(df, window_size=5):
     return np.array(samples), np.array(labels)
 
 
+def train_model():
+
+    #Figure 9 shows that the optimal results can be achieved using three layers
+    model = Sequential()
+    model.add(InputLayer((WINDOW_SIZE, 1)))  # Or keras.layers.Flatten()
+    model.add(LSTM(64))  # 64?? Define meaning
+    model.add(Dense(8, 'relu'))
+    model.add(Dense(1, 'linear'))  #Define
+    cp = ModelCheckpoint(MODEL_PATH, save_best_only=True)
+    model.compile(
+        loss=MeanAbsoluteError(),
+        optimizer=Adam(learning_rate=0.001, clipnorm=1),
+        metrics=[
+            MeanAbsoluteError(),
+            MeanAbsolutePercentageError(),
+            RootMeanSquaredError()
+                  ])
+    print(model.summary())
+    model.fit(samples_train, label_train, validation_data=(samples_test, label_test), epochs=20,
+              callbacks=[cp])  # Diffs between validtion and train data
+    return model
+
+
 train_df, test_df = utilities.init_data()
 
-train_df.index = train_df[constants.DATE_COLUMN_NAME]
-temp = train_df[constants.PRICE_COLUMN_NAME]
+samples_train, label_train = convert_to_samples_and_labels(train_df[constants.PRICE_COLUMN_NAME])
+samples_test, label_test = convert_to_samples_and_labels(test_df[constants.PRICE_COLUMN_NAME])
 
-samples, label = convert_to_samples_and_labels(temp)
+#TRAIN NEW MODEL
+model = train_model()
 
-X_train, y_train = samples[:6000], label[:6000]
-# X_val, y_val = samples[6000:6500], label[6000:6500]
-X_test, y_test = samples[6500:], label[6500:]
 
-# model1 = Sequential()
-# model1.add(InputLayer((5, 1))) # Or keras.layers.Flatten()
-# model1.add(LSTM(64))  # 64?? Define meaning
-# model1.add(Dense(8, 'relu'))
-# model1.add(Dense(1, 'linear'))  #Define
+
+# Load Model
+# model = load_model(MODEL_PATH,
+#                    custom_objects={
+#                        'MeanAbsoluteError': MeanAbsoluteError(),
+#                        'MeanAbsolutePercentageError': MeanAbsolutePercentageError(),
+#                        'RootMeanSquaredError': RootMeanSquaredError()})
+
+train_predictions = model.predict(samples_test).flatten()
+model.evaluate(samples_test, label_test, verbose=2)
+
+results = pd.DataFrame(data={'Train Predictions': train_predictions, 'Actuals': label_test})
+
+print(results)
 #
-# print(model1.summary())
-
-# cp = ModelCheckpoint('model2/', save_best_only=True)
-# model1.compile(loss=MeanSquaredError(), optimizer=Adam(learning_rate=0.001), metrics=[RootMeanSquaredError()])
-#
-# model1.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=1000, callbacks=[cp]) # Diffs between validtion and train data
-
-
-model1 = load_model('model1/')
-
-train_predictions = model1.predict(X_test).flatten()
-model1.evaluate(X_test, y_test, verbose=2)
-
-train_results = pd.DataFrame(data={'Train Predictions': train_predictions, 'Actuals': y_test})
-
-print(train_results)
-#
-plt.plot(train_results['Train Predictions'][:5])
-plt.plot(train_results['Actuals'][:5])
+plt.plot(results['Train Predictions'][:200])
+plt.plot(results['Actuals'][:200])
 plt.show()
-
 
 # train_predictions = model1.predict(X_val).flatten()
 # train_results = pd.DataFrame(data={'Train Predictions': train_predictions, 'Actuals': y_val})
