@@ -6,10 +6,11 @@ import os
 
 def init_data():
     os.chdir("..")
-    train_df = pd.read_csv(rf'{os.getcwd()}\data\2015-2020MERGED.csv')
-    test_df = pd.read_csv(rf'{os.getcwd()}\data\2021.csv').iloc[:720]
+    train_df = pd.read_csv(rf'{os.getcwd()}\data\2015-2022DailyMERGED.csv')
+    validation_df = pd.read_csv(rf'{os.getcwd()}\data\2021ValidationDataMERGED.csv')
+    test_df = pd.read_csv(rf'{os.getcwd()}\data\2021TestDataMERGED.csv')
     _setup_plot_with_data(train_df, test_df)
-    return train_df, test_df
+    return train_df, validation_df, test_df
 
 
 def show_plot(df):
