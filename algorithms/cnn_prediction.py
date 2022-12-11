@@ -37,11 +37,7 @@ def convert_to_samples_and_labels(df, window_size=WINDOW_SIZE):
 def plot_predictions(used_model, sample, label, start=0, end=100):
     train_predictions = used_model.predict(sample).flatten()
     used_model.evaluate(sample, label, verbose=2)
-
     results = pd.DataFrame(data={'Train Predictions': train_predictions, 'Actuals': label})
-
-    print(results)
-    #
     plt.plot(results['Train Predictions'][start:end])
     plt.plot(results['Actuals'][start:end])
     plt.show()
@@ -50,9 +46,8 @@ def plot_predictions(used_model, sample, label, start=0, end=100):
 def train_model():
     model = Sequential()
     model.add(InputLayer((WINDOW_SIZE, 1)))
-    model.add(LSTM(64))
+    model.add(Conv1D(64, kernel_size=2))
     model.add(Flatten())
-    # model.add(LSTM(64))
     model.add(Dense(8, 'relu'))
     model.add(Dense(1, 'linear'))
     cp = ModelCheckpoint(MODEL_PATH, save_best_only=True)
@@ -66,7 +61,7 @@ def train_model():
         ])
     print(model.summary())
     model.fit(samples_train, label_train, validation_data=(samples_test, label_test), epochs=20,
-              callbacks=[cp])  # Diffs between validtion and train data
+              callbacks=[cp])
     return model
 
 
