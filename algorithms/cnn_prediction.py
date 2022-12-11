@@ -47,17 +47,14 @@ def plot_predictions(used_model, sample, label, start=0, end=100):
 def train_model():
     model = Sequential()
     model.add(InputLayer((WINDOW_SIZE, 1)))
-    model.add(Conv1D(32,
+    model.add(Conv1D(filters=32,
                      kernel_size=5,
-                     kernel_regularizer=regularizers.L1L2(l1=1e-5, l2=1e-4),
-                     bias_regularizer=regularizers.L2(1e-4),
-                     activity_regularizer=regularizers.L2(1e-5)
+                     kernel_regularizer=regularizers.L1L2(l1=1e-3),
                      ))
     model.add(Flatten())
-    model.add(Dense(1, 'relu',
-                    kernel_regularizer=regularizers.L1L2(l1=1e-5, l2=1e-4),
-                    bias_regularizer=regularizers.L2(1e-4),
-                    activity_regularizer=regularizers.L2(1e-5)))
+    model.add(Dense(1,
+                    'relu',
+                    ))
     print(model.summary())
     cp = ModelCheckpoint(MODEL_PATH, save_best_only=True)
     model.compile(
@@ -90,5 +87,7 @@ model = train_model()
 
 
 model.evaluate(samples_test, label_test, verbose=2)
+
+# utilities.show_plot(train_df)
 
 # plot_predictions(model, samples_test, label_test)
