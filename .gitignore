@@ -2,5 +2,4 @@
 /model1/**
 /saved_model.pkl
 /lstm_model/**
-/cnn_model/**
 saved_model.pkl
