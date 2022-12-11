@@ -14,12 +14,13 @@ from keras.callbacks import ModelCheckpoint
 from keras.losses import *
 from keras.metrics import RootMeanSquaredError
 from keras.optimizers import Adam
+from keras import regularizers
 from keras.models import load_model
 import utilities
 import constants
 
 WINDOW_SIZE = 5
-MODEL_PATH = 'lstm_model/'
+MODEL_PATH = 'gru_model/'
 
 
 def convert_to_samples_and_labels(df, window_size=WINDOW_SIZE):
@@ -50,13 +51,22 @@ def plot_predictions(used_model, sample, label, start=0, end=100):
 def train_model():
     model = Sequential()
     model.add(InputLayer((WINDOW_SIZE, 1)))
-    model.add(LSTM(32))
+    model.add(GRU(32,
+                  kernel_regularizer=regularizers.L1(l1=0.001),
+                  # bias_regularizer=regularizers.L2(1e-4),
+                  # activity_regularizer=regularizers.L2(1e-5)
+                  ))
     model.add(Flatten())
-    model.add(Dense(1, 'relu'))
+    model.add(Dense(1, 'relu',
+                    # kernel_regularizer=regularizers.L1L2(l1=1e-5, l2=1e-4),
+                    # bias_regularizer=regularizers.L2(1e-4),
+                    # activity_regularizer=regularizers.L2(1e-5)
+                    ))
+    # model.add(Dense(1, 'linear'))
     cp = ModelCheckpoint(MODEL_PATH, save_best_only=True)
     model.compile(
         loss=MeanAbsoluteError(),
-        optimizer=Adam(learning_rate=0.0001),
+        optimizer=Adam(learning_rate=0.001),
         metrics=[
             MeanAbsoluteError(),
             MeanAbsolutePercentageError(),
