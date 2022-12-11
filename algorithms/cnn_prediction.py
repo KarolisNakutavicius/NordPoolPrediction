@@ -15,11 +15,12 @@ from keras.losses import *
 from keras.metrics import RootMeanSquaredError
 from keras.optimizers import Adam
 from keras.models import load_model
+from keras import regularizers
 import utilities
 import constants
 
 WINDOW_SIZE = 5
-MODEL_PATH = 'lstm_model/'
+MODEL_PATH = 'cnn_model/'
 
 
 def convert_to_samples_and_labels(df, window_size=WINDOW_SIZE):
@@ -46,22 +47,29 @@ def plot_predictions(used_model, sample, label, start=0, end=100):
 def train_model():
     model = Sequential()
     model.add(InputLayer((WINDOW_SIZE, 1)))
-    model.add(Conv1D(64, kernel_size=2))
+    model.add(Conv1D(32,
+                     kernel_size=5,
+                     kernel_regularizer=regularizers.L1L2(l1=1e-5, l2=1e-4),
+                     bias_regularizer=regularizers.L2(1e-4),
+                     activity_regularizer=regularizers.L2(1e-5)
+                     ))
     model.add(Flatten())
-    model.add(Dense(8, 'relu'))
-    model.add(Dense(1, 'linear'))
+    model.add(Dense(1, 'relu',
+                    kernel_regularizer=regularizers.L1L2(l1=1e-5, l2=1e-4),
+                    bias_regularizer=regularizers.L2(1e-4),
+                    activity_regularizer=regularizers.L2(1e-5)))
+    print(model.summary())
     cp = ModelCheckpoint(MODEL_PATH, save_best_only=True)
     model.compile(
         loss=MeanAbsoluteError(),
-        optimizer=Adam(learning_rate=0.001),
+        optimizer=Adam(learning_rate=0.00001),
         metrics=[
             MeanAbsoluteError(),
             MeanAbsolutePercentageError(),
             RootMeanSquaredError()
         ])
-    print(model.summary())
-    model.fit(samples_train, label_train, validation_data=(samples_test, label_test), epochs=20,
-              callbacks=[cp])
+
+    model.fit(samples_train, label_train, validation_data=(samples_test, label_test), epochs=50, callbacks=[cp])
     return model
 
 
@@ -73,7 +81,6 @@ samples_test, label_test = convert_to_samples_and_labels(test_df[constants.PRICE
 # TRAIN NEW MODEL
 model = train_model()
 
-
 # Load Model
 # model = load_model(MODEL_PATH,
 #                    custom_objects={
@@ -82,4 +89,6 @@ model = train_model()
 #                        'RootMeanSquaredError': RootMeanSquaredError()})4
 
 
-plot_predictions(model, samples_test, label_test)
+model.evaluate(samples_test, label_test, verbose=2)
+
+# plot_predictions(model, samples_test, label_test)
