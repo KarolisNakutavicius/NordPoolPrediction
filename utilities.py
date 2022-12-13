@@ -7,11 +7,11 @@ from data_type import DataType
 from data_with_results import DataWithResults
 
 
-def init_samples_and_labels(window_size):
+def init_samples_and_labels():
     dataDict = init_data()
     samplesAndLabels = dict()
     for key in dataDict:
-        samplesAndLabels[key] = convert_to_samples_and_labels(dataDict[key][constants.PRICE_COLUMN_NAME], window_size)
+        samplesAndLabels[key] = convert_to_samples_and_labels(dataDict[key][constants.PRICE_COLUMN_NAME], constants.WINDOW_SIZE)
     return samplesAndLabels
 
 
