@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import constants
 import os
 import numpy as np
-from DataType import DataType
-from DataWithResults import DataWithResults
+from data_type import DataType
+from data_with_results import DataWithResults
 
 
 def init_samples_and_labels(window_size):

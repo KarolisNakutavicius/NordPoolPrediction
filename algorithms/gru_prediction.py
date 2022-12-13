@@ -11,7 +11,7 @@ from keras.optimizers import Adam
 from keras import regularizers
 from keras.models import load_model
 import utilities
-from DataType import DataType
+from data_type import DataType
 
 WINDOW_SIZE = 5
 MODEL_PATH = 'gru_model/'

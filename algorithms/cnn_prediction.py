@@ -10,7 +10,7 @@ from keras.optimizers import Adam
 from keras.models import load_model
 from keras import regularizers
 import utilities
-from DataType import DataType
+from data_type import DataType
 
 WINDOW_SIZE = 5
 MODEL_PATH = 'cnn_model/'

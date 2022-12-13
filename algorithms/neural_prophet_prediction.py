@@ -1,8 +1,8 @@
-from neuralprophet import NeuralProphet
-import matplotlib.pyplot as plt
-import utilities
 import pickle
-import constants
+
+import matplotlib.pyplot as plt
+from neuralprophet import NeuralProphet
+import utilities
 
 
 def reformat_for_prophet():
