@@ -18,18 +18,10 @@ from models.data_type import DataType
 def create_model():
     sequentialModel = Sequential()
     sequentialModel.add(InputLayer((constants.WINDOW_SIZE, 1)))
-    sequentialModel.add(GRU(32,
-                  kernel_regularizer=regularizers.L1(l1=0.001),
-                  # bias_regularizer=regularizers.L2(1e-4),
-                  # activity_regularizer=regularizers.L2(1e-5)
-                  ))
+    sequentialModel.add(GRU(32))
     sequentialModel.add(Flatten())
-    sequentialModel.add(Dense(1, 'relu',
-                    # kernel_regularizer=regularizers.L1L2(l1=1e-5, l2=1e-4),
-                    # bias_regularizer=regularizers.L2(1e-4),
-                    # activity_regularizer=regularizers.L2(1e-5)
-                    ))
-    # model.add(Dense(1, 'linear'))
+    sequentialModel.add(Dense(8, 'relu'))
+    sequentialModel.add(Dense(1, 'linear'))
     sequentialModel.compile(
         loss=MeanAbsoluteError(),
         optimizer=Adam(learning_rate=0.001),
