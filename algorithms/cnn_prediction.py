@@ -7,6 +7,7 @@ from keras.callbacks import ModelCheckpoint
 from keras.losses import *
 from keras.metrics import RootMeanSquaredError
 from keras.optimizers import Adam
+from keras.models import load_model
 import constants
 from keras import regularizers
 import utilities
@@ -40,20 +41,20 @@ def create_model():
 data = utilities.init_samples_and_labels()
 
 # TRAIN NEW MODEL
-model = create_model()
-model.fit(
-    data[DataType.TEST].samples,
-    data[DataType.TEST].labels,
-    validation_data=(data[DataType.VALIDATION].samples, data[DataType.VALIDATION].labels),
-    epochs=50,
-    callbacks=[ModelCheckpoint(constants.CNN_MODEL_PATH, save_best_only=True)])
+# model = create_model()
+# model.fit(
+#     data[DataType.TEST].samples,
+#     data[DataType.TEST].labels,
+#     validation_data=(data[DataType.VALIDATION].samples, data[DataType.VALIDATION].labels),
+#     epochs=50,
+#     callbacks=[ModelCheckpoint(constants.CNN_MODEL_PATH, save_best_only=True)])
 
 # Load Model
-# model = load_model(constants.CNN_MODEL_PATH,
-#                    custom_objects={
-#                        'MeanAbsoluteError': MeanAbsoluteError(),
-#                        'MeanAbsolutePercentageError': MeanAbsolutePercentageError(),
-#                        'RootMeanSquaredError': RootMeanSquaredError()})
+model = load_model(constants.CNN_MODEL_PATH,
+                   custom_objects={
+                       'MeanAbsoluteError': MeanAbsoluteError(),
+                       'MeanAbsolutePercentageError': MeanAbsolutePercentageError(),
+                       'RootMeanSquaredError': RootMeanSquaredError()})
 
 model.evaluate(data[DataType.TEST].samples, data[DataType.TEST].labels, verbose=2)
 utilities.plot_predictions(model, data[DataType.TEST].samples, data[DataType.TEST].labels)
