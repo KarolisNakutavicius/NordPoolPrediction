@@ -1,14 +1,7 @@
 import os
 
-import pandas as pd
-
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-import keras
-import numpy as np
-import tensorflow as tf
-# from tensorflow import keras
 from keras.layers import *
-import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.callbacks import ModelCheckpoint
 from keras.losses import *
@@ -23,41 +16,20 @@ WINDOW_SIZE = 5
 MODEL_PATH = 'cnn_model/'
 
 
-def convert_to_samples_and_labels(df, window_size=WINDOW_SIZE):
-    df_as_np = df.to_numpy()
-    samples = []
-    labels = []
-    for i in range(len(df_as_np) - window_size):
-        row = [[a] for a in df_as_np[i:i + window_size]]
-        samples.append(row)
-        label = df_as_np[i + window_size]
-        labels.append(label)
-    return np.array(samples), np.array(labels)
-
-
-def plot_predictions(used_model, sample, label, start=0, end=100):
-    train_predictions = used_model.predict(sample).flatten()
-    used_model.evaluate(sample, label, verbose=2)
-    results = pd.DataFrame(data={'Train Predictions': train_predictions, 'Actuals': label})
-    plt.plot(results['Train Predictions'][start:end])
-    plt.plot(results['Actuals'][start:end])
-    plt.show()
-
-
 def train_model():
-    model = Sequential()
-    model.add(InputLayer((WINDOW_SIZE, 1)))
-    model.add(Conv1D(filters=32,
-                     kernel_size=5,
-                     kernel_regularizer=regularizers.L1L2(l1=1e-3),
-                     ))
-    model.add(Flatten())
-    model.add(Dense(1,
-                    'relu',
-                    ))
-    print(model.summary())
+    sequentialModel = Sequential()
+    sequentialModel.add(InputLayer((WINDOW_SIZE, 1)))
+    sequentialModel.add(Conv1D(filters=32,
+                               kernel_size=5,
+                               kernel_regularizer=regularizers.L1L2(l1=1e-3),
+                               ))
+    sequentialModel.add(Flatten())
+    sequentialModel.add(Dense(1,
+                              'relu',
+                              ))
+    print(sequentialModel.summary())
     cp = ModelCheckpoint(MODEL_PATH, save_best_only=True)
-    model.compile(
+    sequentialModel.compile(
         loss=MeanAbsoluteError(),
         optimizer=Adam(learning_rate=0.00001),
         metrics=[
@@ -66,15 +38,16 @@ def train_model():
             RootMeanSquaredError()
         ])
 
-    model.fit(samples_train, label_train, validation_data=(samples_validate, label_validate), epochs=50, callbacks=[cp])
-    return model
+    sequentialModel.fit(samples_train, label_train, validation_data=(samples_validate, label_validate), epochs=50,
+                        callbacks=[cp])
+    return sequentialModel
 
 
 train_df, validation_df, test_df = utilities.init_data()
-samples_train, label_train = convert_to_samples_and_labels(train_df[constants.PRICE_COLUMN_NAME])
-samples_validate, label_validate = convert_to_samples_and_labels(validation_df[constants.PRICE_COLUMN_NAME])
-samples_test, label_test = convert_to_samples_and_labels(test_df[constants.PRICE_COLUMN_NAME])
-
+samples_train, label_train = utilities.convert_to_samples_and_labels(train_df[constants.PRICE_COLUMN_NAME], WINDOW_SIZE)
+samples_validate, label_validate = utilities.convert_to_samples_and_labels(validation_df[constants.PRICE_COLUMN_NAME],
+                                                                           WINDOW_SIZE)
+samples_test, label_test = utilities.convert_to_samples_and_labels(test_df[constants.PRICE_COLUMN_NAME], WINDOW_SIZE)
 
 # TRAIN NEW MODEL
 # model = train_model()
@@ -88,4 +61,4 @@ model = load_model(MODEL_PATH,
 
 model.evaluate(samples_test, label_test, verbose=2)
 
-# plot_predictions(model, samples_test, label_test)
+# utilities.plot_predictions(model, samples_test, label_test)

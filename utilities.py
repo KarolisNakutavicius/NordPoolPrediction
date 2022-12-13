@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import constants
 import os
+import numpy as np
 
 
 def init_data():
@@ -16,6 +17,27 @@ def init_data():
 def show_plot(df):
     plt.plot(df[constants.DATE_COLUMN_NAME], df[constants.PRICE_COLUMN_NAME])
     plt.show()
+
+
+def plot_predictions(used_model, sample, label, start=0, end=100):
+    used_model.evaluate(sample, label, verbose=2)
+    train_predictions = used_model.predict(sample).flatten()
+    results = pd.DataFrame(data={'Train Predictions': train_predictions, 'Actuals': label})
+    plt.plot(results['Train Predictions'][start:end])
+    plt.plot(results['Actuals'][start:end])
+    plt.show()
+
+
+def convert_to_samples_and_labels(df, window_size):
+    df_as_np = df.to_numpy()
+    samples = []
+    labels = []
+    for i in range(len(df_as_np) - window_size):
+        row = [[a] for a in df_as_np[i:i + window_size]]
+        samples.append(row)
+        label = df_as_np[i + window_size]
+        labels.append(label)
+    return np.array(samples), np.array(labels)
 
 
 def _setup_plot_with_data(*args):
@@ -36,3 +58,4 @@ def _configure_plot():
 def _convert_to_applicable_types(df):
     df[constants.PRICE_COLUMN_NAME] = pd.to_numeric(df[constants.PRICE_COLUMN_NAME])
     df[constants.DATE_COLUMN_NAME] = pd.to_datetime(df[constants.DATE_COLUMN_NAME])
+
