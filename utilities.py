@@ -3,6 +3,16 @@ import matplotlib.pyplot as plt
 import constants
 import os
 import numpy as np
+from DataType import DataType
+from DataWithResults import DataWithResults
+
+
+def init_samples_and_labels(window_size):
+    dataDict = init_data()
+    samplesAndLabels = dict()
+    for key in dataDict:
+        samplesAndLabels[key] = convert_to_samples_and_labels(dataDict[key], window_size)
+    return samplesAndLabels
 
 
 def init_data():
@@ -11,7 +21,12 @@ def init_data():
     validation_df = pd.read_csv(rf'{os.getcwd()}\data\2021ValidationDataMERGED.csv')
     test_df = pd.read_csv(rf'{os.getcwd()}\data\2021TestDataMERGED.csv')
     _setup_plot_with_data(train_df, validation_df, test_df)
-    return train_df, validation_df, test_df
+
+    return {
+        DataType.TRAIN: train_df,
+        DataType.VALIDATION: validation_df,
+        DataType.TEST: test_df
+    }
 
 
 def show_plot(df):
@@ -37,7 +52,7 @@ def convert_to_samples_and_labels(df, window_size):
         samples.append(row)
         label = df_as_np[i + window_size]
         labels.append(label)
-    return np.array(samples), np.array(labels)
+    return DataWithResults(np.array(samples), np.array(labels))
 
 
 def _setup_plot_with_data(*args):
@@ -58,4 +73,3 @@ def _configure_plot():
 def _convert_to_applicable_types(df):
     df[constants.PRICE_COLUMN_NAME] = pd.to_numeric(df[constants.PRICE_COLUMN_NAME])
     df[constants.DATE_COLUMN_NAME] = pd.to_datetime(df[constants.DATE_COLUMN_NAME])
-
