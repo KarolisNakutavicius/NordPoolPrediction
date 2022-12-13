@@ -1,5 +1,6 @@
 .idea/
 /model1/**
-/saved_model.pkl
-/lstm_model/**
-saved_model.pkl
+/results/models/neural_prophet/saved_model.pkl
+/results/models/gru_model/**
+/results/models/lstm_model/**
+results/models/neural_prophet/saved_model.pkl

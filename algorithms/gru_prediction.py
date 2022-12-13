@@ -10,9 +10,8 @@ from keras.metrics import RootMeanSquaredError
 from keras.optimizers import Adam
 from keras import regularizers
 import constants
-from keras.models import load_model
 import utilities
-from data_type import DataType
+from models.data_type import DataType
 
 
 def create_model():

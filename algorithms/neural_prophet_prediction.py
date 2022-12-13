@@ -1,8 +1,8 @@
 import pickle
-
 import matplotlib.pyplot as plt
 from neuralprophet import NeuralProphet
 import utilities
+import constants
 
 
 def reformat_for_prophet():
@@ -23,10 +23,11 @@ m = NeuralProphet()
 train_metrics = m.fit(train_df, freq='D')
 
 
-with open('saved_model.pkl', "wb") as f:
-    pickle.dump(m, f) # Save the model
+with open(constants.NEURAL_PROPHET_MODEL_PATH, "wb") as f:
+    pickle.dump(m, f)
 
-# with open('saved_model.pkl', "rb") as f:
+# LOAD
+# with open(constants.NEURAL_PROPHET_MODEL_PATH, "rb") as f:
 #     m = pickle.load(f)
 
 # Test
