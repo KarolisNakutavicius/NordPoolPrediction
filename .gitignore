@@ -3,4 +3,5 @@
 /results/models/neural_prophet/saved_model.pkl
 /results/models/gru_model/**
 /results/models/lstm_model/**
+__pycache__
 results/models/neural_prophet/saved_model.pkl
