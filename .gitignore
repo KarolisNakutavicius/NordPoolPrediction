@@ -1,6 +1,5 @@
 .idea/
 /model1/**
 /results/models/neural_prophet/saved_model.pkl
-/results/models/lstm_model/**
 __pycache__
 results/models/neural_prophet/saved_model.pkl

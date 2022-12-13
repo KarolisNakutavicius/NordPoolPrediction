@@ -16,8 +16,9 @@ import utilities
 def create_model():
     sequentialModel = Sequential()
     sequentialModel.add(InputLayer((constants.WINDOW_SIZE, 1)))
-    sequentialModel.add(LSTM(32))
+    sequentialModel.add(LSTM(64))
     sequentialModel.add(Flatten())
+    sequentialModel.add(Dense(8, 'relu'))
     sequentialModel.add(Dense(1, 'relu'))
     sequentialModel.compile(
         loss=MeanAbsoluteError(),
