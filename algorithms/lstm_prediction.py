@@ -1,7 +1,6 @@
 import os
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-# from tensorflow import keras
 from keras.layers import *
 from keras.models import Sequential
 from keras.callbacks import ModelCheckpoint
@@ -9,16 +8,14 @@ from keras.losses import *
 from keras.metrics import RootMeanSquaredError
 from keras.optimizers import Adam
 from keras.models import load_model
+import constants
 from data_type import DataType
 import utilities
-
-WINDOW_SIZE = 5
-MODEL_PATH = 'lstm_model/'
 
 
 def create_model():
     sequentialModel = Sequential()
-    sequentialModel.add(InputLayer((WINDOW_SIZE, 1)))
+    sequentialModel.add(InputLayer((constants.WINDOW_SIZE, 1)))
     sequentialModel.add(LSTM(32))
     sequentialModel.add(Flatten())
     sequentialModel.add(Dense(1, 'relu'))
@@ -33,7 +30,7 @@ def create_model():
     return sequentialModel
 
 
-data = utilities.init_samples_and_labels(WINDOW_SIZE)
+data = utilities.init_samples_and_labels()
 
 # TRAIN NEW MODEL
 model = create_model()
@@ -42,10 +39,10 @@ model.fit(
     data[DataType.TEST].labels,
     validation_data=(data[DataType.VALIDATION].samples, data[DataType.VALIDATION].labels),
     epochs=50,
-    callbacks=[ModelCheckpoint(MODEL_PATH, save_best_only=True)])
+    callbacks=[ModelCheckpoint(constants.LSTM_MODEL_PATH, save_best_only=True)])
 
 # Load Model
-# model = load_model(MODEL_PATH,
+# model = load_model(constants.LSTM_MODEL_PATH,
 #                    custom_objects={
 #                        'MeanAbsoluteError': MeanAbsoluteError(),
 #                        'MeanAbsolutePercentageError': MeanAbsolutePercentageError(),
