@@ -37,19 +37,19 @@ def create_model():
 data = utilities.init_samples_and_labels()
 
 # TRAIN NEW MODEL
-model = create_model()
-model.fit(
-    data[DataType.TEST].samples,
-    data[DataType.TEST].labels,
-    validation_data=(data[DataType.VALIDATION].samples, data[DataType.VALIDATION].labels),
-    epochs=50,
-    callbacks=[ModelCheckpoint(constants.GRU_MODEL_PATH, save_best_only=True)])
+# model = create_model()
+# model.fit(
+#     data[DataType.TRAIN].samples,
+#     data[DataType.TRAIN].labels,
+#     validation_data=(data[DataType.VALIDATION].samples, data[DataType.VALIDATION].labels),
+#     epochs=50,
+#     callbacks=[ModelCheckpoint(constants.GRU_MODEL_PATH, save_best_only=True)])
 
 # Load Model
-# model = load_model(constants.GRU_MODEL_PATH,
-#                    custom_objects={
-#                        'MeanAbsoluteError': MeanAbsoluteError(),
-#                        'MeanAbsolutePercentageError': MeanAbsolutePercentageError(),
-#                        'RootMeanSquaredError': RootMeanSquaredError()})
+model = load_model(constants.GRU_MODEL_PATH,
+                   custom_objects={
+                       'MeanAbsoluteError': MeanAbsoluteError(),
+                       'MeanAbsolutePercentageError': MeanAbsolutePercentageError(),
+                       'RootMeanSquaredError': RootMeanSquaredError()})
 
-utilities.plot_predictions(model, data[DataType.TEST].samples, data[DataType.TEST].labels)
+utilities.plot_predictions(model, data[DataType.TRAIN].samples, data[DataType.TRAIN].labels)

@@ -29,14 +29,14 @@ with open(constants.NEURAL_PROPHET_MODEL_PATH, "wb") as f:
 #     m = pickle.load(f)
 
 # Test
-test_metrics = m.test(data[DataType.TEST])
+test_metrics = m.test(data[DataType.TRAIN])
 print(f'============ TEST RESULTS ============\n\n{test_metrics}\n\n====================================\n\n')
 
 # Predict
-forecast = m.predict(data[DataType.TEST])
+forecast = m.predict(data[DataType.TRAIN])
 
-plot = m.plot(forecast)
-# plot = m.plot_components(forecast)
+# plot = m.plot(forecast)
+plot = m.plot_components(forecast)
 plt.ylabel('MWh')
 plt.xlabel('Date')
 plot.show()

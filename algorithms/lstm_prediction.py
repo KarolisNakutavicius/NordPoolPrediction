@@ -36,10 +36,10 @@ data = utilities.init_samples_and_labels()
 # TRAIN NEW MODEL
 model = create_model()
 model.fit(
-    data[DataType.TEST].samples,
-    data[DataType.TEST].labels,
+    data[DataType.TRAIN].samples,
+    data[DataType.TRAIN].labels,
     validation_data=(data[DataType.VALIDATION].samples, data[DataType.VALIDATION].labels),
-    epochs=50,
+    epochs=15,
     callbacks=[ModelCheckpoint(constants.LSTM_MODEL_PATH, save_best_only=True)])
 
 # Load Model
