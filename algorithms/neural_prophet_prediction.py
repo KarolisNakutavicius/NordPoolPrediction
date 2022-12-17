@@ -36,6 +36,7 @@ print(f'============ TEST RESULTS ============\n\n{test_metrics}\n\n============
 forecast = m.predict(data[DataType.TEST])
 
 plot = m.plot(forecast)
+# plot = m.plot_components(forecast)
 plt.ylabel('MWh')
 plt.xlabel('Date')
 plot.show()
