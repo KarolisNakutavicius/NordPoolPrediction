@@ -3,7 +3,7 @@ WINDOW_SIZE = 5
 
 PRICE_COLUMN_NAME = 'Value'
 DATE_COLUMN_NAME = 'DateTime'
-TITLE_PREDICTED_PRICES = "Dienos vidutinės kainos"
+TITLE_PREDICTED_PRICES = "Prognozės"
 
 SAVED_MODELS_PATH = rf'{os.path.abspath(os.path.dirname(__file__))}\results\models'
 CNN_MODEL_PATH = rf'{SAVED_MODELS_PATH}\cnn_model'
