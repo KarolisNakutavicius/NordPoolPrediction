@@ -52,4 +52,4 @@ model = load_model(constants.GRU_MODEL_PATH,
                        'MeanAbsolutePercentageError': MeanAbsolutePercentageError(),
                        'RootMeanSquaredError': RootMeanSquaredError()})
 
-utilities.plot_predictions(model, data[DataType.TRAIN].samples, data[DataType.TRAIN].labels)
+utilities.plot_predictions(model, data[DataType.TEST].samples, data[DataType.TEST].labels)

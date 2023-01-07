@@ -5,6 +5,7 @@ import os
 import numpy as np
 from models.data_type import DataType
 from models.data_with_results import DataWithResults
+from matplotlib.dates import DateFormatter
 
 
 def init_samples_and_labels():
@@ -37,9 +38,15 @@ def show_plot(df):
 def plot_predictions(used_model, sample, label, start=0, end=100):
     used_model.evaluate(sample, label, verbose=2)
     train_predictions = used_model.predict(sample).flatten()
+
+    x = init_data()[DataType.TEST][constants.DATE_COLUMN_NAME][start:end]
     results = pd.DataFrame(data={'Train Predictions': train_predictions, 'Actuals': label})
-    plt.plot(results['Train Predictions'][start:end])
-    plt.plot(results['Actuals'][start:end])
+    plt.plot(x, results['Train Predictions'][start:end], "-b", label="Prognozuojamos reikšmės")
+    plt.plot(x, results['Actuals'][start:end], "-r", label="Tikros reikšmės")
+    date_form = DateFormatter("%Y-%m-%d %H:%M")
+    plt.gca().xaxis.set_major_formatter(date_form)
+
+    plt.legend(loc="upper right", fontsize=20)
     plt.show()
 
 
@@ -62,12 +69,12 @@ def _setup_plot_with_data(*args):
 
 
 def _configure_plot():
-    plt.figure(figsize=(20, 16))
-    plt.xlabel("Data", fontsize=20, labelpad=20)
-    plt.ylabel("MWh", fontsize=20)
+    plt.figure(figsize=(14, 12))
+    plt.xlabel("Data", fontsize=16, labelpad=20)
+    plt.ylabel("EUR / MWh", fontsize=16, labelpad=20)
     plt.title(constants.TITLE_PREDICTED_PRICES, fontsize=30, pad=50)
-    plt.xticks(fontsize=20, rotation=60)
-    plt.yticks(fontsize=20)
+    plt.xticks(fontsize=12, rotation=10)
+    plt.yticks(fontsize=12)
 
 
 def _convert_to_applicable_types(df):
